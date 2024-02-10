@@ -1,4 +1,4 @@
-namespace Quantum.ShorAlgorithm {
+namespace Quantum.ShorsAlgorithm {
     open Microsoft.Quantum.Intrinsic;
 
     // Greatest Common Divisor (GCD)
@@ -22,5 +22,20 @@ namespace Quantum.ShorAlgorithm {
             set result = result * base;
         }
         return result;
+    }
+
+    // Operation to simulate the order-finding subroutine classically
+    operation FindOrderClassically(a : Int, N : Int) : Int {
+        mutable r = 1;
+        mutable result = a;
+
+        // Loop to find the order 'r'
+        while (result != 1) {
+            set result = (result * a) % N;
+            set r = r + 1;
+        }
+
+        // Return the found order
+        return r;
     }
 }

@@ -1,4 +1,4 @@
-namespace QuantumRandomNumberGenerator {
+namespace Quantum.ShorsAlgorithm {
     open Microsoft.Quantum.Convert;
     open Microsoft.Quantum.Intrinsic;
     open Microsoft.Quantum.Math;
