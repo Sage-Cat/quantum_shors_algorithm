@@ -3,16 +3,23 @@ namespace Sample {
     open Microsoft.Quantum.Random;
     open Microsoft.Quantum.Math;
 
-
+    // N1=1843=19*97
+    // N2=16837=113*149
+    // N4=20373811=5449*3739
+    // N3=918092443=20929*43867
     @EntryPoint()
     operation Main() : (Int, Int) {
-        let n = 16837; // = 113*149
+        let N = 1843; // = 19*97
+        // let N = 16837; // = 113*149
+        // let N = 20373811; // =5449*3739
+        // let N = 918092443; // = 20929*43867
 
-        let (p, q) = SmolinVarOfShorsAlgorithm(n);
-        Message($"Found factorization {n} = {p} * {q}");
+        let (p, q) = SmolinVarOfShorsAlgorithm(N);
+        Message($"Found factorization {N} = {p} * {q}");
 
         return (p, q);
     }
+    
 
     /// # Summary
     /// Uses Smolin's variation of  Shor's algorithm to factor an input number.
@@ -57,7 +64,7 @@ namespace Sample {
             }
 
             set attempt = attempt+1;
-            if (attempt > 100) {
+            if (attempt > 100000) {
                 fail "Failed to find factors: too many attempts!";
             }
         }
