@@ -3,10 +3,6 @@ namespace Sample {
     open Microsoft.Quantum.Random;
     open Microsoft.Quantum.Math;
 
-    // N1=1843=19*97
-    // N2=16837=113*149
-    // N4=20373811=5449*3739
-    // N3=918092443=20929*43867
     @EntryPoint()
     operation Main() : (Int, Int) {
         let N = 1843; // = 19*97
@@ -22,45 +18,39 @@ namespace Sample {
     
 
     /// # Summary
-    /// Uses Smolin's variation of  Shor's algorithm to factor an input number.
+    /// Uses Smolin's variation of  Shor's algorithm to factor an input N.
     ///
     /// # Input
-    /// ## number
+    /// ## N
     /// A semiprime integer to be factored.
     ///
     /// # Output
-    /// Pair of numbers p > 1 and q > 1 such that p⋅q = `number`
-    operation SmolinVarOfShorsAlgorithm(number : Int) : (Int, Int) {
-        // First check the most trivial case (the provided number is even).
-        if number % 2 == 0 {
-            Message("An even number has been given; 2 is a factor.");
-            return (number / 2, 2);
-        }
-
+    /// Pair of Ns p > 1 and q > 1 such that p⋅q = `N`
+    operation SmolinVarOfShorsAlgorithm(N : Int) : (Int, Int) {
         mutable foundFactors = false;
         mutable factors = (1, 1);
         mutable attempt = 1;
         repeat {
-            Message($"*** Factorizing {number}, attempt {attempt}.");
+            Message($"*** Factoring  {N}, attempt {attempt}.");
 
-            let generator = DrawRandomInt(1, number - 1);
+            let generator = FindA(N);
 
-            if GreatestCommonDivisorI(generator, number) == 1 {
+            if GreatestCommonDivisorI(generator, N) == 1 {
                 Message($"Assume that period=2.");
 
                 // Smolin variation
                 let period = 2;
 
                 set (foundFactors, factors) =
-                    MaybeFactorsFromPeriod(number, generator, period);
+                    MaybeFactorsFromPeriod(N, generator, period);
             }
             else {
-                let gcd = GreatestCommonDivisorI(number, generator);
+                let gcd = GreatestCommonDivisorI(N, generator);
 
                 Message($"We have guessed a divisor {gcd}");
 
                 set foundFactors = true;
-                set factors = (gcd, number / gcd);
+                set factors = (gcd, N / gcd);
             }
 
             set attempt = attempt+1;
@@ -76,6 +66,27 @@ namespace Sample {
         return factors;
     }
 
+    operation FindA(N : Int) : (Int) {
+        mutable candidateA = 1;
+        mutable found = false;
+        mutable testA = 2;
+
+        Message($"Starting searching needed 'a' for N={N}");
+        // Use a while loop to iterate until a suitable `a` is found or all candidates have been tested.
+        while (not found) and (testA < N) {
+            if ((testA * testA) % N == 1  ) {
+                set candidateA = testA;
+                set found = true;
+            }
+            set testA = testA + 1;
+        }
+
+        Message($"Found 'a'={candidateA}");
+
+        // Return the found candidate or 1 if none are suitable
+        return candidateA;
+    }
+
     /// # Summary
     /// Tries to find the factors of `modulus` given a `period` and `generator`.
     ///
@@ -84,14 +95,14 @@ namespace Sample {
         generator : Int,
         period : Int)
     : (Bool, (Int, Int)) {
-        // Compute `generator` ^ `period/2` mod `number`.
+        // Compute `generator` ^ `period/2` mod `N`.
         let halfPower = ExpModI(generator, period / 2, modulus);
 
         // If we are unlucky, halfPower is just -1 mod N, which is a trivial
         // case and not useful for factoring.
         if halfPower != modulus - 1 {
             // When the halfPower is not -1 mod N, halfPower-1 or
-            // halfPower+1 share non-trivial divisor with `number`. Find it.
+            // halfPower+1 share non-trivial divisor with `N`. Find it.
             let factor = MaxI(
                 GreatestCommonDivisorI(halfPower - 1, modulus),
                 GreatestCommonDivisorI(halfPower + 1, modulus)

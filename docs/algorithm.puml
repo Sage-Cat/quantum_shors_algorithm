@@ -2,7 +2,7 @@
 !theme plain
 
 participant "Start\nwith N" as Init
-participant "Generate\nrandom a" as RandomA
+participant "Generate\na, such as\na^2=1 mod N" as RandomA
 participant "Check GCD\nfor equal 1" as GCDCheck
 participant "Smolin\n Variation\n(Period = 2)" as SmolinVar
 participant "Classical\nPost-Processing" as PostProc
