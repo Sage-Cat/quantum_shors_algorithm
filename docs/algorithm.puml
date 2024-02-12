@@ -1,0 +1,18 @@
+@startuml
+!theme plain
+
+participant "Start\nwith N" as Init
+participant "Generate\nrandom a" as RandomA
+participant "Check GCD\nfor equal 1" as GCDCheck
+participant "Smolin\n Variation\n(Period = 2)" as SmolinVar
+participant "Classical\nPost-Processing" as PostProc
+participant "Output\nFactors" as Output
+
+Init -> RandomA: Start with N
+RandomA -> GCDCheck: Gen random a
+GCDCheck -> SmolinVar: If co-prime
+SmolinVar -> PostProc: Apply variation
+PostProc -> RandomA: If factors not found
+PostProc -> Output: Return factors
+
+@enduml
