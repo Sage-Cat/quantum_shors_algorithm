@@ -16,3 +16,8 @@ This project demonstrates integer factoring using quantum computing, inspired by
 5. **Measurement**: Measure the quantum state to obtain an outcome that, with high probability, is related to the period of `a` modulo `N`.
     
 6. **Post-Processing**: Use classical algorithms to extract factors of `N` from the measured value. If we have no factors, then repeat.
+
+
+## References 
+
+For simulation of original Shor's algorithm used [microsoft qsharp implementation by swernli](https://github.com/microsoft/qsharp/blob/a2e65622d4071487a7e237a189deb64b7624b745/samples/algorithms/Shor.qs)
