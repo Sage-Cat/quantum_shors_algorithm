@@ -33,19 +33,21 @@ namespace Sample {
         repeat {
             Message($"*** Factoring  {N}, attempt {attempt}.");
 
-            let generator = FindA(N);
+            let a = FindA(N);
 
-            if GreatestCommonDivisorI(generator, N) == 1 {
+            if GreatestCommonDivisorI(a, N) == 1 {
                 Message($"Assume that period=2.");
 
                 // Smolin variation
-                let period = 2;
+                let r = 2;
+
+                ValidateAUsingQuantumSubroutine(a, N, r);
 
                 set (foundFactors, factors) =
-                    MaybeFactorsFromPeriod(N, generator, period);
+                    MaybeFactorsFromPeriod(N, a, r);
             }
             else {
-                let gcd = GreatestCommonDivisorI(N, generator);
+                let gcd = GreatestCommonDivisorI(N, a);
 
                 Message($"We have guessed a divisor {gcd}");
 
@@ -87,16 +89,29 @@ namespace Sample {
         return candidateA;
     }
 
+    operation ValidateAUsingQuantumSubroutine(a : Int, N : Int, r : Int) : Result {
+        use qubits = Qubit[2];
+        // Prepare qubits
+        H(qubits[0]);
+        CNOT(qubits[0], qubits[1]);
+
+        // Measurement could be used to validate assumptions or effects
+        let measurement = M(qubits[0]);
+
+        ResetAll(qubits);
+        return measurement;
+    }
+
     /// # Summary
-    /// Tries to find the factors of `modulus` given a `period` and `generator`.
+    /// Tries to find the factors of `modulus` given a `period` and `a`.
     ///
     function MaybeFactorsFromPeriod(
         modulus : Int,
-        generator : Int,
+        a : Int,
         period : Int)
     : (Bool, (Int, Int)) {
-        // Compute `generator` ^ `period/2` mod `N`.
-        let halfPower = ExpModI(generator, period / 2, modulus);
+        // Compute `a` ^ `period/2` mod `N`.
+        let halfPower = ExpModI(a, period / 2, modulus);
 
         // If we are unlucky, halfPower is just -1 mod N, which is a trivial
         // case and not useful for factoring.
