@@ -1,0 +1,9 @@
+{
+    "version": 4,
+    "vendor": {
+        "conan": {}
+    },
+    "include": [
+        "/mnt/c/Users/sagec/Desktop/git_projects/quantum_shors_algorithm/smolin_variant/build/CMakePresets.json"
+    ]
+}
